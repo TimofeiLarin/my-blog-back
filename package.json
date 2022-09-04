@@ -1,0 +1,18 @@
+{
+  "name": "my-blog",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "author": "Timofei Larin",
+  "license": "ISC",
+  "scripts": {
+    "start": "node index.js",
+    "start-dev": "nodemon index.js"
+  },
+  "description": "",
+  "dependencies": {
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "nodemon": "^2.0.19"
+  }
+}
