@@ -1,31 +1,38 @@
-import { Schema, model } from 'mongoose';
+import { Schema, Document, model } from 'mongoose';
 
-interface IUserSchema {
+interface DocumentResult<T> {
+  _doc: T;
+  createdAt: Date;
+  updatedAt: Date;
+}
+export interface IUserSchema extends Document, DocumentResult<IUserSchema> {
   fullName: string;
   email: string;
   passwordHash: string;
   avatarUrl?: string;
 }
 
-const UserSchema = new Schema<IUserSchema>({
-  fullName: {
-    type: String,
-    required: true,
+const UserSchema = new Schema({
+    fullName: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    passwordHash: {
+      type: String,
+      required: true,
+    },
+    avatarUrl: String,
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  passwordHash: {
-    type: String,
-    required: true,
-  },
-  avatarUrl: String,
-},
-{
-  timestamps: true,
-}
+  {
+    timestamps: true,
+  }
 );
 
-export default model('User', UserSchema);
+const User = model<IUserSchema>('User', UserSchema)
+
+export default User;

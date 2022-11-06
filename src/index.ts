@@ -1,15 +1,19 @@
-import express, { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
+import express from 'express';
 import { connect } from 'mongoose';
-// import jwt from 'jsonwebtoken';
 
 import { authValidation } from './validations/auth';
+
+import { userGetMe, userLogin, userRegister } from './controllers/UserController';
+
+import { checkAuth } from './utils/checkAuth';
+
+const PORT = 4444;
 
 const app = express();
 
 const connectDB = async () => {
  try {
-  await connect('mongodb+srv://Admin:WmwTJ9XXUEkuUKGP@cluster0.a0jguwj.mongodb.net/?retryWrites=true&w=majority')
+  await connect('mongodb+srv://Admin:ISIl8PKZOqDaxLOb@cluster0.a0jguwj.mongodb.net/my_blog?retryWrites=true&w=majority')
   console.log('Mongo DB OK!');
 
  } catch (error) {
@@ -21,32 +25,13 @@ connectDB();
 
 app.use(express.json());
 
-app.get('/', (_, res) => {
-  res.send('hi tim');
-});
+app.get('/auth/me', checkAuth, userGetMe);
 
-app.post('/login', (req, res) => {
-  console.log(req.body);
+app.post('/auth/login', userLogin);
 
-  res.json({
-    success: true,
-  });
-  // res.send('hi tim');
-})
+app.post('/auth/register', authValidation, userRegister);
 
-app.post('/auth/register', authValidation, (request: Request, response: Response) => {
-  const errors = validationResult(request);
-
-  if(errors.isEmpty()) {
-    return response.status(400).json(errors.array());
-  }
-
-  return response.json({
-    success: true,
-  });
-});
-
-app.listen(4444, () => {
+app.listen(PORT, () => {
   try {
     console.log('Server OK!');
   } catch (error) {
