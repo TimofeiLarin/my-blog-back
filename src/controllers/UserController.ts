@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 
 import UserModel from '../models/User';
 
-const userRegister =  async (request: Request, response: Response) => {
+const userRegister = async (request: Request, response: Response) => {
   try {
     const errors = validationResult(request);
 

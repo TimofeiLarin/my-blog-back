@@ -1,9 +1,17 @@
 import express from 'express';
 import { connect } from 'mongoose';
 
-import { authValidation } from './validations/auth';
-
 import { userGetMe, userLogin, userRegister } from './controllers/UserController';
+import {
+  createPublication,
+  getAllPublications,
+  getOnePublication,
+  removePublication,
+  updatePublication,
+} from './controllers/PostController';
+
+import { authValidation, loginValidation } from './validations/auth';
+import { createPublicationValidation } from './validations/publication';
 
 import { checkAuth } from './utils/checkAuth';
 
@@ -25,11 +33,21 @@ connectDB();
 
 app.use(express.json());
 
-app.get('/auth/me', checkAuth, userGetMe);
-
-app.post('/auth/login', userLogin);
+app.post('/auth/login', loginValidation, userLogin);
 
 app.post('/auth/register', authValidation, userRegister);
+
+app.get('/auth/me', checkAuth, userGetMe);
+
+app.get('/publications', checkAuth, getAllPublications);
+
+app.get('/publications/:id', checkAuth, getOnePublication);
+
+app.post('/publications', checkAuth, createPublicationValidation, createPublication);
+
+app.delete('/publications/:id', checkAuth, removePublication);
+
+app.patch('/publications/:id', checkAuth, createPublicationValidation, updatePublication);
 
 app.listen(PORT, () => {
   try {
