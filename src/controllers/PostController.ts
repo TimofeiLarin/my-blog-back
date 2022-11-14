@@ -1,16 +1,9 @@
 import { Request, Response } from "express";
-import { validationResult } from "express-validator";
 
 import PublicationModel from '../models/Publication';
 
 const createPublication = async (request: Request, response: Response) => {
   try {
-    const errors = validationResult(request);
-
-    if (!errors.isEmpty()) {
-      return response.status(400).json(errors.array());
-    }
-
     const doc = new PublicationModel({
       title: request.body.title,
       text: request.body.text,

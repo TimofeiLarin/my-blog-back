@@ -1,5 +1,6 @@
 import express from 'express';
 import { connect } from 'mongoose';
+import multer from 'multer';
 
 import { userGetMe, userLogin, userRegister } from './controllers/UserController';
 import {
@@ -14,18 +15,24 @@ import { authValidation, loginValidation } from './validations/auth';
 import { createPublicationValidation } from './validations/publication';
 
 import { checkAuth } from './utils/checkAuth';
+import { validationErrors } from './utils/validationErrors';
+
+import { ROUTES } from './constants/routes';
+import { MESSAGE } from './constants/message';
 
 const PORT = 4444;
+
+const URL = 'mongodb+srv://Admin:ISIl8PKZOqDaxLOb@cluster0.a0jguwj.mongodb.net/my_blog?retryWrites=true&w=majority';
 
 const app = express();
 
 const connectDB = async () => {
  try {
-  await connect('mongodb+srv://Admin:ISIl8PKZOqDaxLOb@cluster0.a0jguwj.mongodb.net/my_blog?retryWrites=true&w=majority')
-  console.log('Mongo DB OK!');
+  await connect(URL);
+  console.log(MESSAGE.OK.MONGO);
 
  } catch (error) {
-  console.log('Mongo DB Error==>', error);
+  console.log(MESSAGE.ERROR.MONGO, error);
  }
 };
 
@@ -33,26 +40,58 @@ connectDB();
 
 app.use(express.json());
 
-app.post('/auth/login', loginValidation, userLogin);
+const storage = multer.diskStorage({
+  destination: (_, __, callback) => {
+    callback(null, 'uploads')
+  },
+  filename: (_, file, callback) => {
+    callback(null, file.originalname)
+  }
+});
 
-app.post('/auth/register', authValidation, userRegister);
+const upload = multer({ storage });
 
-app.get('/auth/me', checkAuth, userGetMe);
 
-app.get('/publications', checkAuth, getAllPublications);
+app.use(ROUTES.UPLOADS, express.static('uploads'));
 
-app.get('/publications/:id', checkAuth, getOnePublication);
+app.post(ROUTES.UPLOAD, checkAuth, upload.single('image'), (request, response) => {
+  response.json({
+    url: `/uploads/${request.file?.originalname}`,
+  });
+});
 
-app.post('/publications', checkAuth, createPublicationValidation, createPublication);
+app.post(ROUTES.LOGIN, loginValidation, validationErrors, userLogin);
 
-app.delete('/publications/:id', checkAuth, removePublication);
+app.post(ROUTES.REGISTER, authValidation,  validationErrors, userRegister);
 
-app.patch('/publications/:id', checkAuth, createPublicationValidation, updatePublication);
+app.get(ROUTES.GET_AUTH_ME, checkAuth, userGetMe);
+
+app.get(ROUTES.PUBLICATIONS, checkAuth, getAllPublications);
+
+app.get(ROUTES.PUBLICATION, checkAuth, getOnePublication);
+
+app.post(
+  ROUTES.PUBLICATIONS,
+  checkAuth,
+  createPublicationValidation,
+  validationErrors,
+  createPublication,
+);
+
+app.delete(ROUTES.PUBLICATION, checkAuth, removePublication);
+
+app.patch(
+  ROUTES.PUBLICATION,
+  checkAuth,
+  createPublicationValidation,
+  validationErrors,
+  updatePublication,
+);
 
 app.listen(PORT, () => {
   try {
-    console.log('Server OK!');
+    console.log(MESSAGE.OK.SERVER);
   } catch (error) {
-    console.log('error =>', error);
+    console.log(MESSAGE.ERROR.SERVER, error);
   }
 });
