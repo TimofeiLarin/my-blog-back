@@ -1,6 +1,7 @@
 import express from 'express';
 import { connect } from 'mongoose';
 import multer from 'multer';
+import cors from 'cors';
 
 import { userGetMe, userLogin, userRegister } from './controllers/UserController';
 import {
@@ -39,6 +40,8 @@ const connectDB = async () => {
 connectDB();
 
 app.use(express.json());
+app.use(cors());
+
 
 const storage = multer.diskStorage({
   destination: (_, __, callback) => {
@@ -62,11 +65,11 @@ app.post(ROUTES.UPLOAD, checkAuth, upload.single('image'), (request, response) =
 
 app.post(ROUTES.LOGIN, loginValidation, validationErrors, userLogin);
 
-app.post(ROUTES.REGISTER, authValidation,  validationErrors, userRegister);
+app.post(ROUTES.REGISTER, authValidation, validationErrors, userRegister);
 
 app.get(ROUTES.GET_AUTH_ME, checkAuth, userGetMe);
 
-app.get(ROUTES.PUBLICATIONS, checkAuth, getAllPublications);
+app.get(ROUTES.PUBLICATIONS, getAllPublications);
 
 app.get(ROUTES.PUBLICATION, checkAuth, getOnePublication);
 

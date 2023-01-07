@@ -5,7 +5,7 @@ const MESSAGE = {
   },
   OK: {
     MONGO: 'Mongo DB OK!',
-    SERVER: 'Server Error ==>',
+    SERVER: 'Server OK!',
   },
 };
 
