@@ -10,6 +10,7 @@ import {
   getOnePublication,
   removePublication,
   updatePublication,
+  getLastFiveTags,
 } from './controllers/PostController';
 
 import { authValidation, loginValidation } from './validations/auth';
@@ -71,7 +72,9 @@ app.get(ROUTES.GET_AUTH_ME, checkAuth, userGetMe);
 
 app.get(ROUTES.PUBLICATIONS, getAllPublications);
 
-app.get(ROUTES.PUBLICATION, checkAuth, getOnePublication);
+app.get(ROUTES.PUBLICATION, getOnePublication);
+
+app.get(ROUTES.TAGS, getLastFiveTags);
 
 app.post(
   ROUTES.PUBLICATIONS,

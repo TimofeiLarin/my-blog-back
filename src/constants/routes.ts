@@ -6,6 +6,7 @@ const ROUTES = {
   GET_AUTH_ME: '/auth/me',
   PUBLICATION: '/publications/:id',
   PUBLICATIONS: '/publications',
+  TAGS: '/tags',
 };
 
 export { ROUTES };

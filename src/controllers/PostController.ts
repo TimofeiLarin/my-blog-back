@@ -42,7 +42,7 @@ const getOnePublication = async (request: Request, response: Response) => {
   try {
     const publicationId = request.params.id;
 
-    await PublicationModel.findByIdAndUpdate(
+    PublicationModel.findByIdAndUpdate(
       {
         _id: publicationId,
       },
@@ -148,10 +148,31 @@ const updatePublication = async (request: Request, response: Response) => {
   }
 };
 
+const getLastFiveTags = async (request: Request, response: Response) => {
+  try {
+    const publications = await PublicationModel.find().limit(5).exec();
+
+    const tags = publications
+      .map(publication => publication.tags)
+      .flat()
+      .filter((tag, index, tags) => tags.indexOf(tag) === index)
+      .slice(0, 5);
+
+    return response.status(200).json(tags);
+  } catch (error) {
+    console.log('getAllPublications', error);
+    response.status(500).json({
+      message: 'Failed get all publications',
+      error,
+    });
+  }
+};
+
 export {
   createPublication,
   getAllPublications,
   getOnePublication,
   removePublication,
   updatePublication,
+  getLastFiveTags,
 };
