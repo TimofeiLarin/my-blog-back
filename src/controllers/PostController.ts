@@ -70,7 +70,7 @@ const getOnePublication = async (request: Request, response: Response) => {
 
         return response.status(200).json(doc);
       }
-    );
+    ).populate('user');
   } catch (error) {
     console.log('getOnePublication', error);
     response.status(500).json({
@@ -84,7 +84,7 @@ const removePublication = async (request: Request, response: Response) => {
   try {
     const publicationId = request.params.id;
 
-    await PublicationModel.findByIdAndDelete(
+    PublicationModel.findByIdAndDelete(
       {
         _id: publicationId,
       },

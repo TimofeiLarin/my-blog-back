@@ -50,7 +50,7 @@ const userLogin = async (request: Request, response: Response) => {
       }); 
     }
 
-    const isValid = bcrypt.compare(request.body.password, currentUser._doc.passwordHash);
+    const isValid = await bcrypt.compare(request.body.password, currentUser._doc.passwordHash);
 
     if (!isValid) {
       return response.status(403).json({

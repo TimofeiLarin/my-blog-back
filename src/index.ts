@@ -22,9 +22,9 @@ import { validationErrors } from './utils/validationErrors';
 import { ROUTES } from './constants/routes';
 import { MESSAGE } from './constants/message';
 
-const PORT = 4444;
+const PORT = process.env.PORT || 4444;
 
-const URL = 'mongodb+srv://Admin:ISIl8PKZOqDaxLOb@cluster0.a0jguwj.mongodb.net/my_blog?retryWrites=true&w=majority';
+const URL = process.env.MONGODB_URI || '';
 
 const app = express();
 
