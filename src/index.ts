@@ -2,6 +2,7 @@ import express from 'express';
 import { connect } from 'mongoose';
 import multer from 'multer';
 import cors from 'cors';
+import fs from 'fs';
 
 import { userGetMe, userLogin, userRegister } from './controllers/UserController';
 import {
@@ -46,10 +47,14 @@ app.use(cors());
 
 const storage = multer.diskStorage({
   destination: (_, __, callback) => {
-    callback(null, 'uploads')
+    if (!fs.existsSync('uploads')) {
+      fs.mkdirSync('uploads');
+    }
+
+    callback(null, 'uploads');
   },
   filename: (_, file, callback) => {
-    callback(null, file.originalname)
+    callback(null, file.originalname);
   }
 });
 
